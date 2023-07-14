@@ -8,10 +8,10 @@ namespace ParserGameActiv
     public partial class Form1 : Form
     {
         public static string TokenAPI { get; set; }
-        public static DateTime newDatePars;//Для хранения и вывода даты нового парсинга
-        public static string statusServerResponse;//Для хранения и вывода статуса парсинга
+        public static DateTime newDatePars;//Р”Р»СЏ С…СЂР°РЅРµРЅРёСЏ Рё РІС‹РІРѕРґР° РґР°С‚С‹ РЅРѕРІРѕРіРѕ РїР°СЂСЃРёРЅРіР°
+        public static string statusServerResponse;//Р”Р»СЏ С…СЂР°РЅРµРЅРёСЏ Рё РІС‹РІРѕРґР° СЃС‚Р°С‚СѓСЃР° РїР°СЂСЃРёРЅРіР°
         public static bool buttonEnable;
-        public static double couuntMilliseconds;//Для записи времени в милисекундах для нового парсинга;
+        public static double couuntMilliseconds;//Р”Р»СЏ Р·Р°РїРёСЃРё РІСЂРµРјРµРЅРё РІ РјРёР»РёСЃРµРєСѓРЅРґР°С… РґР»СЏ РЅРѕРІРѕРіРѕ РїР°СЂСЃРёРЅРіР°;
         public static System.Timers.Timer timerRivals = new();
         public static System.Timers.Timer timerGames = new();
 
@@ -21,209 +21,202 @@ namespace ParserGameActiv
         }
 
         /// <summary>
-        /// Настройка формы при запуске (читаем настройки из реестра , если там нет оставляем по дефолту)
+        /// РќР°СЃС‚СЂРѕР№РєР° С„РѕСЂРјС‹ РїСЂРё Р·Р°РїСѓСЃРєРµ (С‡РёС‚Р°РµРј РЅР°СЃС‚СЂРѕР№РєРё РёР· СЂРµРµСЃС‚СЂР° , РµСЃР»Рё С‚Р°Рј РЅРµС‚ РѕСЃС‚Р°РІР»СЏРµРј РїРѕ РґРµС„РѕР»С‚Сѓ)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
-            //Токен для API
+            //РўРѕРєРµРЅ РґР»СЏ API
             TokenAPI = "Yr56JpxKgQapZzKXnz7TgcvxVuq5Jj";
-            //Проверка есть ли настройки
+            //РџСЂРѕРІРµСЂРєР° РµСЃС‚СЊ Р»Рё РЅР°СЃС‚СЂРѕР№РєРё
             ConfigProgram.CheckConfig(button2.Text, checkBox2.Checked, checkBox1.Checked);
 
-            //Проверка записан ли в автозагрузки в реестр
+            //РџСЂРѕРІРµСЂРєР° Р·Р°РїРёСЃР°РЅ Р»Рё РІ Р°РІС‚РѕР·Р°РіСЂСѓР·РєРё РІ СЂРµРµСЃС‚СЂ
             label7.Text = RegistryAutoRun.AutoRun();
             //button3.Enabled = buttonEnable;
 
-            //Настраиваем форму 
+            //РќР°СЃС‚СЂР°РёРІР°РµРј С„РѕСЂРјСѓ 
             var (ayto, save, dataToSend, date, status) = ConfigProgram.GetToSettingsFile();
-            //Если был включён автопарсинг
-            if (ayto == "Остановить")
+            //Р•СЃР»Рё Р±С‹Р» РІРєР»СЋС‡С‘РЅ Р°РІС‚РѕРїР°СЂСЃРёРЅРі
+            if (ayto == "РћСЃС‚Р°РЅРѕРІРёС‚СЊ")
             {
-                button2.Text = "Остановить";
-                label4.Text = "Запущен авто сбор статы.";
+                button2.Text = "РћСЃС‚Р°РЅРѕРІРёС‚СЊ";
+                label4.Text = "Р—Р°РїСѓС‰РµРЅ Р°РІС‚Рѕ СЃР±РѕСЂ СЃС‚Р°С‚С‹.";
 
-                //Расчёт времени до парсинга
-                couuntMilliseconds = DateTimer.TimerСalculation();
-                label5.Text = newDatePars.ToString("dd.MM.yyyy HH:mm");//Установка новой даты парсинга
-                //Установка таймера rivals
-                timerRivals.Interval= couuntMilliseconds;//Задаём время до парсинга в милисекундах
-                timerRivals.Elapsed += Timer_ElapsedRivalsToday;//Срабатывание события по оканчанию таймера
-                timerRivals.Enabled = true;//Включение таймера
-                timerRivals.AutoReset = true;//Повтор таймера
-                timerRivals.Start();//Запуск таймера
+                //Р Р°СЃС‡С‘С‚ РІСЂРµРјРµРЅРё РґРѕ РїР°СЂСЃРёРЅРіР°
+                couuntMilliseconds = DateTimer.TimerРЎalculation();
+                label5.Text = newDatePars.ToString("dd.MM.yyyy HH:mm");//РЈСЃС‚Р°РЅРѕРІРєР° РЅРѕРІРѕР№ РґР°С‚С‹ РїР°СЂСЃРёРЅРіР°
+                //РЈСЃС‚Р°РЅРѕРІРєР° С‚Р°Р№РјРµСЂР° rivals
+                timerRivals.Interval= couuntMilliseconds;//Р—Р°РґР°С‘Рј РІСЂРµРјСЏ РґРѕ РїР°СЂСЃРёРЅРіР° РІ РјРёР»РёСЃРµРєСѓРЅРґР°С…
+                timerRivals.Elapsed += Timer_ElapsedRivalsToday;//РЎСЂР°Р±Р°С‚С‹РІР°РЅРёРµ СЃРѕР±С‹С‚РёСЏ РїРѕ РѕРєР°РЅС‡Р°РЅРёСЋ С‚Р°Р№РјРµСЂР°
+                timerRivals.Enabled = true;//Р’РєР»СЋС‡РµРЅРёРµ С‚Р°Р№РјРµСЂР°
+                timerRivals.AutoReset = true;//РџРѕРІС‚РѕСЂ С‚Р°Р№РјРµСЂР°
+                timerRivals.Start();//Р—Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР°
 
-                //Установка таймера GamesToday
-                timerGames.Interval = DateTimer.TimerСalculationGamesToday();//Задаём время до парсинга в милисекундах
-                timerGames.Elapsed += Timer_ElapsedGamesToday;//Срабатывание события по оканчанию таймера
-                timerGames.Enabled = true;//Включение таймера
-                timerGames.AutoReset = true;//Повтор таймера
-                timerGames.Start();//Запуск таймера
+                //РЈСЃС‚Р°РЅРѕРІРєР° С‚Р°Р№РјРµСЂР° GamesToday
+                timerGames.Interval = DateTimer.TimerРЎalculationGamesToday();//Р—Р°РґР°С‘Рј РІСЂРµРјСЏ РґРѕ РїР°СЂСЃРёРЅРіР° РІ РјРёР»РёСЃРµРєСѓРЅРґР°С…
+                timerGames.Elapsed += Timer_ElapsedGamesToday;//РЎСЂР°Р±Р°С‚С‹РІР°РЅРёРµ СЃРѕР±С‹С‚РёСЏ РїРѕ РѕРєР°РЅС‡Р°РЅРёСЋ С‚Р°Р№РјРµСЂР°
+                timerGames.Enabled = true;//Р’РєР»СЋС‡РµРЅРёРµ С‚Р°Р№РјРµСЂР°
+                timerGames.AutoReset = true;//РџРѕРІС‚РѕСЂ С‚Р°Р№РјРµСЂР°
+                timerGames.Start();//Р—Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР°
             }
 
-            label3.Text = date;//Дата последнего парсинга
-            label8.Text = status;//Статус отправки данных на сервер
+            label3.Text = date;//Р”Р°С‚Р° РїРѕСЃР»РµРґРЅРµРіРѕ РїР°СЂСЃРёРЅРіР°
+            label8.Text = status;//РЎС‚Р°С‚СѓСЃ РѕС‚РїСЂР°РІРєРё РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
 
-            //Установка чекбоксов
+            //РЈСЃС‚Р°РЅРѕРІРєР° С‡РµРєР±РѕРєСЃРѕРІ
             checkBox1.Checked = Convert.ToBoolean(dataToSend);
             checkBox2.Checked = Convert.ToBoolean(save);
         }
 
         /// <summary>
-        /// Запуск парсинга по срабатыванию таймера 1 раз в день в 20:30
+        /// Р—Р°РїСѓСЃРє РїР°СЂСЃРёРЅРіР° РїРѕ СЃСЂР°Р±Р°С‚С‹РІР°РЅРёСЋ С‚Р°Р№РјРµСЂР° 1 СЂР°Р· РІ РґРµРЅСЊ РІ 20:30
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private async void Timer_ElapsedGamesToday(object? sender, ElapsedEventArgs e)
         {
-            //Получаем данные с сервера и делаем выборку в словарь (возвращает текущую дату парсинга)
+            //РџРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ СЃ СЃРµСЂРІРµСЂР° Рё РґРµР»Р°РµРј РІС‹Р±РѕСЂРєСѓ РІ СЃР»РѕРІР°СЂСЊ (РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰СѓСЋ РґР°С‚Сѓ РїР°СЂСЃРёРЅРіР°)
             label10.Text = GettingAccountData.GetData();
 
-            //Если чекбокс отмечен данные отправятся на сервер
+            //Р•СЃР»Рё С‡РµРєР±РѕРєСЃ РѕС‚РјРµС‡РµРЅ РґР°РЅРЅС‹Рµ РѕС‚РїСЂР°РІСЏС‚СЃСЏ РЅР° СЃРµСЂРІРµСЂ
             if (checkBox1.Checked)
             {
-                //Отправка полученых данных на сервер
+                //РћС‚РїСЂР°РІРєР° РїРѕР»СѓС‡РµРЅС‹С… РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
                 await DataOutputToSend.OutputToSendGamesToday();
             }
-            //Если чекбокс отмечен данные сохранятся в фаил на пк
+            //Р•СЃР»Рё С‡РµРєР±РѕРєСЃ РѕС‚РјРµС‡РµРЅ РґР°РЅРЅС‹Рµ СЃРѕС…СЂР°РЅСЏС‚СЃСЏ РІ С„Р°РёР» РЅР° РїРє
             if (checkBox2.Checked)
             {
-                //Сохранение данных в фаил
+                //РЎРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РІ С„Р°РёР»
                 DataOutputSave.SaveFileGamesToday();
             }
 
-            //Расчёт времени до парсинга
-            timerGames.Interval = DateTimer.TimerСalculationGamesToday();
+            //Р Р°СЃС‡С‘С‚ РІСЂРµРјРµРЅРё РґРѕ РїР°СЂСЃРёРЅРіР°
+            timerGames.Interval = DateTimer.TimerРЎalculationGamesToday();
             
         }
 
         /// <summary>
-        /// Ручной сбор статистики с выводом результата и отправкой на сервер если выбрано
+        /// Р СѓС‡РЅРѕР№ СЃР±РѕСЂ СЃС‚Р°С‚РёСЃС‚РёРєРё СЃ РІС‹РІРѕРґРѕРј СЂРµР·СѓР»СЊС‚Р°С‚Р° Рё РѕС‚РїСЂР°РІРєРѕР№ РЅР° СЃРµСЂРІРµСЂ РµСЃР»Рё РІС‹Р±СЂР°РЅРѕ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private async void Button1_Click(object sender, EventArgs e)
         {
-            //Получаем токен
+            //РџРѕР»СѓС‡Р°РµРј С‚РѕРєРµРЅ
             //GetTokenServer.GetToken();
 
-            //Получаем данные с сервера и делаем выборку в словарь
+            //РџРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ СЃ СЃРµСЂРІРµСЂР° Рё РґРµР»Р°РµРј РІС‹Р±РѕСЂРєСѓ РІ СЃР»РѕРІР°СЂСЊ
             label3.Text = GettingAccountData.GetData();
-            //Обновление настроек в реестре
+            //РћР±РЅРѕРІР»РµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє РІ СЂРµРµСЃС‚СЂРµ
             ConfigProgram.UpdateConfigFile(button2.Text, checkBox2.Checked, checkBox1.Checked, label3.Text, label8.Text);
 
-            //Если чекбокс отмечен данные отправятся на сервер
+            //Р•СЃР»Рё С‡РµРєР±РѕРєСЃ РѕС‚РјРµС‡РµРЅ РґР°РЅРЅС‹Рµ РѕС‚РїСЂР°РІСЏС‚СЃСЏ РЅР° СЃРµСЂРІРµСЂ
             if (checkBox1.Checked)
             {
-                //Отправка полученых данных на сервер
+                //РћС‚РїСЂР°РІРєР° РїРѕР»СѓС‡РµРЅС‹С… РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
                 await DataOutputToSend.OutputToSendRivalsToday();
                 await DataOutputToSend.OutputToSendGamesToday();
                 label8.Text = statusServerResponse;
             }
 
-            //Если чекбокс отмечен данные сохранятся в фаил на пк
+            //Р•СЃР»Рё С‡РµРєР±РѕРєСЃ РѕС‚РјРµС‡РµРЅ РґР°РЅРЅС‹Рµ СЃРѕС…СЂР°РЅСЏС‚СЃСЏ РІ С„Р°РёР» РЅР° РїРє
             if (checkBox2.Checked)
             {
-                //Сохранение данных в фаил
+                //РЎРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РІ С„Р°РёР»
                 DataOutputSave.SaveFileRivalsToday();
                 DataOutputSave.SaveFileGamesToday();
             }
-
-            //Выводим данные на экран в доп форме
-            //FormDataOutput formDataOutput = new()
-            //{
-               // Owner = this//Привязка второй формы к основной
-            //};
-            //formDataOutput.ShowDialog();//Вывод формы с результатом парсинга
         }
 
 
         /// <summary>
-        /// Запуск автоматического сбора статы 1 раз в день
+        /// Р—Р°РїСѓСЃРє Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРіРѕ СЃР±РѕСЂР° СЃС‚Р°С‚С‹ 1 СЂР°Р· РІ РґРµРЅСЊ
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
-            //Запуск и остановка Автосбора
-            if (button2.Text == "Запустить")
+            //Р—Р°РїСѓСЃРє Рё РѕСЃС‚Р°РЅРѕРІРєР° РђРІС‚РѕСЃР±РѕСЂР°
+            if (button2.Text == "Р—Р°РїСѓСЃС‚РёС‚СЊ")
             {
-                button2.Text = "Остановить";
-                label4.Text = "Запущен авто сбор статы.";
+                button2.Text = "РћСЃС‚Р°РЅРѕРІРёС‚СЊ";
+                label4.Text = "Р—Р°РїСѓС‰РµРЅ Р°РІС‚Рѕ СЃР±РѕСЂ СЃС‚Р°С‚С‹.";
 
-                //Расчёт времени до парсинга
-                timerRivals.Interval = DateTimer.TimerСalculation();
-                //Вывод даты на форму
-                label5.Text = newDatePars.ToString("dd.MM.yyyy HH:mm");//Установка новой даты парсинга
+                //Р Р°СЃС‡С‘С‚ РІСЂРµРјРµРЅРё РґРѕ РїР°СЂСЃРёРЅРіР°
+                timerRivals.Interval = DateTimer.TimerРЎalculation();
+                //Р’С‹РІРѕРґ РґР°С‚С‹ РЅР° С„РѕСЂРјСѓ
+                label5.Text = newDatePars.ToString("dd.MM.yyyy HH:mm");//РЈСЃС‚Р°РЅРѕРІРєР° РЅРѕРІРѕР№ РґР°С‚С‹ РїР°СЂСЃРёРЅРіР°
 
-                //Установка таймера                
-                timerRivals.Elapsed += Timer_ElapsedRivalsToday;//Срабатывание события по оканчанию таймера
-                timerRivals.Enabled = true;//Включение таймера
-                timerRivals.AutoReset = true;//Повтор таймера
-                timerRivals.Start();//Запуск таймера
+                //РЈСЃС‚Р°РЅРѕРІРєР° С‚Р°Р№РјРµСЂР°                
+                timerRivals.Elapsed += Timer_ElapsedRivalsToday;//РЎСЂР°Р±Р°С‚С‹РІР°РЅРёРµ СЃРѕР±С‹С‚РёСЏ РїРѕ РѕРєР°РЅС‡Р°РЅРёСЋ С‚Р°Р№РјРµСЂР°
+                timerRivals.Enabled = true;//Р’РєР»СЋС‡РµРЅРёРµ С‚Р°Р№РјРµСЂР°
+                timerRivals.AutoReset = true;//РџРѕРІС‚РѕСЂ С‚Р°Р№РјРµСЂР°
+                timerRivals.Start();//Р—Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР°
 
-                //Установка таймера GamesToday
-                timerGames.Interval = DateTimer.TimerСalculationGamesToday();//Задаём время до парсинга в милисекундах
-                timerGames.Elapsed += Timer_ElapsedGamesToday;//Срабатывание события по оканчанию таймера
-                timerGames.Enabled = true;//Включение таймера
-                timerGames.AutoReset = true;//Повтор таймера
-                timerGames.Start();//Запуск таймера
+                //РЈСЃС‚Р°РЅРѕРІРєР° С‚Р°Р№РјРµСЂР° GamesToday
+                timerGames.Interval = DateTimer.TimerРЎalculationGamesToday();//Р—Р°РґР°С‘Рј РІСЂРµРјСЏ РґРѕ РїР°СЂСЃРёРЅРіР° РІ РјРёР»РёСЃРµРєСѓРЅРґР°С…
+                timerGames.Elapsed += Timer_ElapsedGamesToday;//РЎСЂР°Р±Р°С‚С‹РІР°РЅРёРµ СЃРѕР±С‹С‚РёСЏ РїРѕ РѕРєР°РЅС‡Р°РЅРёСЋ С‚Р°Р№РјРµСЂР°
+                timerGames.Enabled = true;//Р’РєР»СЋС‡РµРЅРёРµ С‚Р°Р№РјРµСЂР°
+                timerGames.AutoReset = true;//РџРѕРІС‚РѕСЂ С‚Р°Р№РјРµСЂР°
+                timerGames.Start();//Р—Р°РїСѓСЃРє С‚Р°Р№РјРµСЂР°
             }
             else
             {
-                button2.Text = "Запустить";//Меняем на кнопке автосбора надпись
-                label4.Text = "";//Чистим строку что запущен автосбор
-                label5.Text = "";//Чистим дату парсинга на форме
+                button2.Text = "Р—Р°РїСѓСЃС‚РёС‚СЊ";//РњРµРЅСЏРµРј РЅР° РєРЅРѕРїРєРµ Р°РІС‚РѕСЃР±РѕСЂР° РЅР°РґРїРёСЃСЊ
+                label4.Text = "";//Р§РёСЃС‚РёРј СЃС‚СЂРѕРєСѓ С‡С‚Рѕ Р·Р°РїСѓС‰РµРЅ Р°РІС‚РѕСЃР±РѕСЂ
+                label5.Text = "";//Р§РёСЃС‚РёРј РґР°С‚Сѓ РїР°СЂСЃРёРЅРіР° РЅР° С„РѕСЂРјРµ
                 timerRivals.Stop();
                 timerGames.Stop();
             }
 
-            //Меняем настройки в файле 
+            //РњРµРЅСЏРµРј РЅР°СЃС‚СЂРѕР№РєРё РІ С„Р°Р№Р»Рµ 
             ConfigProgram.UpdateConfigFile(button2.Text, checkBox2.Checked, checkBox1.Checked, label3.Text, label8.Text);
         }
 
         /// <summary>
-        /// Запуск парсинга по срабатыванию таймера 1 раз в день в 19:00
+        /// Р—Р°РїСѓСЃРє РїР°СЂСЃРёРЅРіР° РїРѕ СЃСЂР°Р±Р°С‚С‹РІР°РЅРёСЋ С‚Р°Р№РјРµСЂР° 1 СЂР°Р· РІ РґРµРЅСЊ РІ 19:00
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private async void Timer_ElapsedRivalsToday(object? sender, ElapsedEventArgs e)
         {
 
-            //Получаем данные с сервера и делаем выборку в словарь (возвращает текущую дату парсинга)
+            //РџРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ СЃ СЃРµСЂРІРµСЂР° Рё РґРµР»Р°РµРј РІС‹Р±РѕСЂРєСѓ РІ СЃР»РѕРІР°СЂСЊ (РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰СѓСЋ РґР°С‚Сѓ РїР°СЂСЃРёРЅРіР°)
             label3.Text = GettingAccountData.GetData();
 
-            //Если чекбокс отмечен данные отправятся на сервер
+            //Р•СЃР»Рё С‡РµРєР±РѕРєСЃ РѕС‚РјРµС‡РµРЅ РґР°РЅРЅС‹Рµ РѕС‚РїСЂР°РІСЏС‚СЃСЏ РЅР° СЃРµСЂРІРµСЂ
             if (checkBox1.Checked)
             {
-                //Отправка полученых данных на сервер
+                //РћС‚РїСЂР°РІРєР° РїРѕР»СѓС‡РµРЅС‹С… РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
                 await DataOutputToSend.OutputToSendRivalsToday();
                 label8.Text = statusServerResponse;
             }
 
-            //Если чекбокс отмечен данные сохранятся в фаил на пк
+            //Р•СЃР»Рё С‡РµРєР±РѕРєСЃ РѕС‚РјРµС‡РµРЅ РґР°РЅРЅС‹Рµ СЃРѕС…СЂР°РЅСЏС‚СЃСЏ РІ С„Р°РёР» РЅР° РїРє
             if (checkBox2.Checked)
             {
-                //Сохранение данных в фаил
+                //РЎРѕС…СЂР°РЅРµРЅРёРµ РґР°РЅРЅС‹С… РІ С„Р°РёР»
                 DataOutputSave.SaveFileRivalsToday();
             }
 
-            //-- Переопределения таймера с расчётам времени в милисек --//
-            //Расчёт времени до парсинга
-            timerRivals.Interval = DateTimer.TimerСalculation();
+            //-- РџРµСЂРµРѕРїСЂРµРґРµР»РµРЅРёСЏ С‚Р°Р№РјРµСЂР° СЃ СЂР°СЃС‡С‘С‚Р°Рј РІСЂРµРјРµРЅРё РІ РјРёР»РёСЃРµРє --//
+            //Р Р°СЃС‡С‘С‚ РІСЂРµРјРµРЅРё РґРѕ РїР°СЂСЃРёРЅРіР°
+            timerRivals.Interval = DateTimer.TimerРЎalculation();
             label5.Text = newDatePars.ToString("dd.MM.yyyy HH:mm");
 
-            //Обновление файла конфига
+            //РћР±РЅРѕРІР»РµРЅРёРµ С„Р°Р№Р»Р° РєРѕРЅС„РёРіР°
             ConfigProgram.UpdateConfigFile(button2.Text, checkBox2.Checked, checkBox1.Checked, label3.Text, label8.Text);
         }
 
-        //Обновления настроек в файле при измененнии чекбокса Сохранять данные в папку на пк. 
+        //РћР±РЅРѕРІР»РµРЅРёСЏ РЅР°СЃС‚СЂРѕРµРє РІ С„Р°Р№Р»Рµ РїСЂРё РёР·РјРµРЅРµРЅРЅРёРё С‡РµРєР±РѕРєСЃР° РЎРѕС…СЂР°РЅСЏС‚СЊ РґР°РЅРЅС‹Рµ РІ РїР°РїРєСѓ РЅР° РїРє. 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
             ConfigProgram.UpdateConfigFile(button2.Text, checkBox2.Checked, checkBox1.Checked, label3.Text, label8.Text);
         }
-        //Обновления настроек в файле при измененнии чекбокса Отправить данные на сервер.
+        //РћР±РЅРѕРІР»РµРЅРёСЏ РЅР°СЃС‚СЂРѕРµРє РІ С„Р°Р№Р»Рµ РїСЂРё РёР·РјРµРЅРµРЅРЅРёРё С‡РµРєР±РѕРєСЃР° РћС‚РїСЂР°РІРёС‚СЊ РґР°РЅРЅС‹Рµ РЅР° СЃРµСЂРІРµСЂ.
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             ConfigProgram.UpdateConfigFile(button2.Text, checkBox2.Checked, checkBox1.Checked, label3.Text, label8.Text);
