@@ -30,7 +30,7 @@ namespace HardPlay
                 //Делаем запросы и кладём результат выборки в словарь
                 try
                 {
-                    var client = new RestClient("https://info.rpbot.pro");
+                    var client = new RestClient("https://***************");
                     var request = new RestRequest($"remote/management/accounts?accessToken={GetTokenServer.TokenAPI}", Method.Get);
 
                     var response = client.ExecuteGet(request);
