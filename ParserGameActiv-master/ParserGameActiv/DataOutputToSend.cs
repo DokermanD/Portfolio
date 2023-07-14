@@ -43,8 +43,8 @@ namespace ParserGameActiv
         {
             try
             {
-                var client = new RestClient("https://ykserver.host");
-                var request = new RestRequest("RpBotOnlineGamesData/Save", Method.Post);
+                var client = new RestClient("https://***********");
+                var request = new RestRequest("******************", Method.Post);
 
                 var data = DataPackagingRivals();
                 request.AddBody(data);
@@ -79,23 +79,14 @@ namespace ParserGameActiv
         {
             try
             {
-                var client = new RestClient("https://ykserver.host");
-                var request = new RestRequest("RpBotOnlineGamesData/SaveSb", Method.Post);
+                var client = new RestClient("https://***************");
+                var request = new RestRequest("**********************", Method.Post);
 
                 var data = DataPackagingRivals();
                 request.AddBody(data);
 
                 var response = await client.ExecutePostAsync(request);
 
-                //if (response.Content.Contains("ok"))
-                //{
-                //    var count = response.Content.Split(',')[1].Split(':')[1].Replace("}", "");
-                //    //Form1.statusServerResponse = $"Отправлено - {count}";
-                //}
-                //else
-                //{
-                //    //Form1.statusServerResponse = $"Ошибка!";
-                //}
             }
             catch (Exception)
             {
