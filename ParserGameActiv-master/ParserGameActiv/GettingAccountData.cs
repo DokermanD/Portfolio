@@ -52,8 +52,6 @@ namespace ParserGameActiv
                 Task.Delay(1000);
             }
             
-
-
             return DateTime.Now.ToString("dd.MM.yyyy");
         }
 
