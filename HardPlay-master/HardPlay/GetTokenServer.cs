@@ -18,11 +18,11 @@ namespace HardPlay
         /// <returns></returns>
         public static void GetToken()
         {
-            TokenAPI = "866e9a08-2073-4005-9a78-d74ef367b566";
+            TokenAPI = "**************************";
 
             //Логин данные
-            string login = "coins.for.you22@gmail.com";
-            string pass = "YzEm588Um5";
+            string login = "*****************";
+            string pass = "******************";
 
 
             //Получаем токен
@@ -33,13 +33,13 @@ namespace HardPlay
                 Accept = "application/json",
                 Useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.160 YaBrowser/22.5.3.684 Yowser/2.5 Safari/537.36",
                 ContentType = "application/json",
-                Referer = "https://app.rpbot.pro/",
-                Host = "api.rpbot.pro"
+                Referer = "https://*************",
+                Host = "***************"
             };
 
 
             //Добавляем нестандартные загаловки
-            postRequest.Headers.Add("Origin", "https://app.rpbot.pro");
+            postRequest.Headers.Add("Origin", "*************");
             postRequest.Headers.Add("sec-ch-ua", "\" Not A; Brand\";v=\"99\", \"Chromium\";v=\"100\", \"Yandex\";v=\"22\"");
             postRequest.Headers.Add("sec-ch-ua-mobile", "?0");
             postRequest.Headers.Add("sec-ch-ua-platform", "\"Windows\"");
@@ -60,7 +60,6 @@ namespace HardPlay
             catch (Exception e)
             {
                 Form1.timer.Stop();//Стопаем таймер
-                //DataOutputToSend.OutputToSend("Ошибка при получении токена!");//Отправка сообщения об ошибке на север
                 MessageBox.Show(e.Message, "Ошибка при получении токена!");
             }
         }
