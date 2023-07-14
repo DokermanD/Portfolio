@@ -12,9 +12,9 @@ namespace HardPlay
     internal class StartBotTelegram
     {
         //Создаём подключение с токеном
-        static TelegramBotClient client = new TelegramBotClient("5925341407:AAFT53VV9TTBFlmaJO1GH3mFsYw2lAnBTxc");
+        static TelegramBotClient client = new TelegramBotClient("токен для телеграм бота");
         //Токен группы
-        public static long catIdGrup = -1001870080898;
+        public static long catIdGrup = ****************;
 
 
         /// <summary>
