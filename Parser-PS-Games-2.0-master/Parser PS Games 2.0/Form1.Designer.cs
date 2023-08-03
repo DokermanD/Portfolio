@@ -191,7 +191,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Parser PS Games 3.0 Free";
+            this.Text = "Parser PS Games 3.0 ";
             this.ResumeLayout(false);
             this.PerformLayout();
 

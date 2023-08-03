@@ -14,7 +14,7 @@ namespace Parser_PS_Games_2._0
         {
             await Task.Run(() =>
             {
-                lock (LockSeveErrors) 
+                lock (LockSeveErrors)
                 {
                     using (FileStream fs = new FileStream("./ErrorLogs.txt", FileMode.Append))
                     using (StreamWriter sw = new StreamWriter(fs))

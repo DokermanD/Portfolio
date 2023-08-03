@@ -30,9 +30,9 @@ namespace Parser_PS_Games_2._0
         //Переменные
         public int сloseThread = 0;
         int threadName = 0;
-        public async void ParssAllGames(LinksPages linksPages, ChekingProxy chekingProxy, string _colPotok) 
+        public async void ParssAllGames(LinksPages linksPages, ChekingProxy chekingProxy, int _colPotok) 
         {
-            //Обнуляем количество закрывшихся потокав
+            //Обнуляем количество закрывшихся потоков
             сloseThread = 0;
             //Получаем ссылки на игры
             LinksGames = linksPages.HomePageLinksGames;
@@ -41,7 +41,7 @@ namespace Parser_PS_Games_2._0
             //Чистим от пустых строк
             ProxyListValid.RemoveAll(x => x == string.Empty || x == null);
             LinksGames.RemoveAll(x => x == string.Empty || x == null);
-            colPotok = Convert.ToInt32(_colPotok);
+            colPotok = _colPotok;
 
             //Логирование
             ErrorLogSeve("ParsingGames", $"Количество игр для парсинга - {LinksGames.Count}");
@@ -88,7 +88,7 @@ namespace Parser_PS_Games_2._0
                         errorPars = true;
                         parssMain = false;
 
-                        //Парсим по 1 странице кадым потокам с 1 прокси 
+                        //Парсим по 1 странице каждым потокам с 1 прокси 
                         if (LinksGames.Count > 0)
                         {
                             //------------------------------------------------------------------------------------------- БЛОК 1 - Загрузка страницы и проверка на бан
@@ -104,10 +104,11 @@ namespace Parser_PS_Games_2._0
                                 doc = web.Load(linkStr.Split('|')[1], proxyStr.Split(':')[0], Convert.ToInt32(proxyStr.Split(':')[1]), proxyStr.Split(':')[2], proxyStr.Split(':')[3]);
 
                                 //Проверка на бан прокси
-                                var banPrixy = doc.DocumentNode.SelectSingleNode("//h1").InnerText;
-                                if (banPrixy == "Access Denied")
+                                var banProxy = doc.DocumentNode.SelectSingleNode("//h1").InnerText;
+                                if (banProxy == "Access Denied")
                                 {
                                     ErrorLogSeve($"Прокси {proxyStr} получил бан!", $"{ currentThread.Name} завершил работу.");
+                                    currentThread.Abort();
                                     сloseThread++;
                                     break;
                                 }
@@ -117,16 +118,19 @@ namespace Parser_PS_Games_2._0
                             {
                                 lock (LockListLink)
                                 {
-                                    LinksGames.Add(linkStr);//Кладём строку обратно в список
+                                    //LinksGames.Add(linkStr);//Кладём строку обратно в список
                                 }
 
                                 //Описываем ошибку
-                                var errorMessage = $"Не загрузилась страница с прокси Блок -1 {proxyStr}";
+                                var errorMessage = $"Не загрузилась страница с прокси Блок -1 {proxyStr}\n{linkStr.Split('|')[1]}";
+
+
+
                                 stepNext = false;//Блокируем дальнейшее выполнение шагов
 
                                 //Логирование ошибок 
                                 ErrorLogSeve(errorMessage, ex.Message);
-                                await Task.Delay(10000);//Ждём 10 секунд и пробуем ещё раз
+                                await Task.Delay(60000);//Ждём 10 секунд и пробуем ещё раз
                             }
 
 

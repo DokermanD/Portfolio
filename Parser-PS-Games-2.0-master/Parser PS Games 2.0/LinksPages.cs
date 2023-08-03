@@ -46,7 +46,7 @@ namespace Parser_PS_Games_2._0
         //Парсим все страницы с играми
         public void ParsingLinkPage(List<string> ProxyListValid)
         {
-            //Расчитываем количество потоков и формируем список ссылок на страницы
+            //Рассчитываем количество потоков и формируем список ссылок на страницы
             ColThredParsing(ProxyListValid);
 
             //Парсим ссылки на игры со всех страниц сайта

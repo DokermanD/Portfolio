@@ -1,0 +1,15 @@
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\bin\Debug\HtmlAgilityPack.dll
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\bin\Debug\HtmlAgilityPack.pdb
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\bin\Debug\HtmlAgilityPack.xml
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser PS Games 2.2.csproj.AssemblyReference.cache
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser PS Games 2.2.csproj.SuggestedBindingRedirects.cache
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser_PS_Games_2._0.Form1.resources
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser_PS_Games_2._0.Properties.Resources.resources
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser PS Games 2.2.csproj.GenerateResource.cache
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser PS Games 2.2.csproj.CoreCompileInputs.cache
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser PS Games 2.2.csproj.CopyComplete
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\bin\Debug\Parser PS Games 3.0.exe.config
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\bin\Debug\Parser PS Games 3.0.exe
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\bin\Debug\Parser PS Games 3.0.pdb
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser PS Games 3.0.exe
+E:\Visual Studio 2022\GIT\Portfolio\Parser-PS-Games-2.0-master\Parser PS Games 2.0\obj\Debug\Parser PS Games 3.0.pdb

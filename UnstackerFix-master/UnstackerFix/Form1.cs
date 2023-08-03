@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace UnstackerFix
 {
     public partial class Form1 : Form
     {
+        //Выбор папки для сохранения
+        private string folderPatch = "";
+
+        private string patch;
+        private string[] patchImage;
+        private Rectangle rect;
+
+        //Проверка при вводе имени папки на дубли
+        private readonly List<string> spisokPapok = new List<string>();
+        private int X, Y, W, H;
+        
         public Form1()
         {
             InitializeComponent();
@@ -35,23 +44,15 @@ namespace UnstackerFix
             textBox4.Enabled = false;
             textBox5.Enabled = false;
             //Проверка выбран ли путь для сохранения папки
-            if (File.Exists(@".\FolderPach.txt"))
+            if (File.Exists(@".\FolderPatch.txt"))
             {
                 label4.Text = "Папка для сохранения выбрана";
                 label4.ForeColor = Color.Gray;
                 textBox1.Enabled = true;
-                patch = File.ReadAllText(@".\FolderPach.txt").Trim();
-                
+                patch = File.ReadAllText(@".\FolderPatch.txt").Trim();
             }
-
         }
-        string patch;
-        Rectangle rect;
-        string[] pach;
-        int X ;
-        int Y ;
-        int W ;
-        int H ;
+
         private void panel1_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -68,10 +69,9 @@ namespace UnstackerFix
 
         private void panel1_DragDrop(object sender, DragEventArgs e)
         {
-            pach = (string[])e.Data.GetData(DataFormats.FileDrop);
-            pictureBox1.Image = Image.FromFile(pach[0]);
+            patchImage = (string[])e.Data.GetData(DataFormats.FileDrop);
+            pictureBox1.Image = Image.FromFile(patchImage[0]);
             panel1.Visible = false;
-            
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
@@ -80,10 +80,10 @@ namespace UnstackerFix
             {
                 pictureBox2.Visible = true;
 
-                PictureBox pb = pictureBox1 as PictureBox;
+                var pb = pictureBox1;
 
-                Bitmap bmp1 = pb.Image as Bitmap;
-                Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+                var bmp1 = pb.Image as Bitmap;
+                var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
                 pictureBox2.Image = bmp2;
 
                 //Выводим координаты маркера
@@ -110,7 +110,6 @@ namespace UnstackerFix
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -118,44 +117,43 @@ namespace UnstackerFix
         {
             try
             {
-                Graphics g = pictureBox1.CreateGraphics();
+                var g = pictureBox1.CreateGraphics();
                 g.DrawImage(pictureBox1.Image, 0, 0);
 
-                Point kor = e.Location;
+                var kor = e.Location;
                 X = kor.X;
                 Y = kor.Y;
                 W = 15;
                 H = 15;
 
-                Pen pero = new Pen(Color.Red, 1);
+                var pero = new Pen(Color.Red, 1);
                 rect = new Rectangle(X - 7, Y - 7, W, H);
                 g.DrawRectangle(pero, rect);
             }
             catch (Exception)
             {
-
             }
         }
 
         //Плюс в лево
         private void button1_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
-            rect = new Rectangle(X-1, Y, W+1, H);
+            var pero = new Pen(Color.Red, 1);
+            rect = new Rectangle(X - 1, Y, W + 1, H);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -164,25 +162,26 @@ namespace UnstackerFix
             label12.Text = rect.Width.ToString();
             label13.Text = rect.Height.ToString();
         }
+
         //Плюс в право
         private void button2_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
+            var pero = new Pen(Color.Red, 1);
             rect = new Rectangle(X, Y, W + 1, H);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -191,25 +190,26 @@ namespace UnstackerFix
             label12.Text = rect.Width.ToString();
             label13.Text = rect.Height.ToString();
         }
+
         //Плюс в верх
         private void button3_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
-            rect = new Rectangle(X, Y-1, W, H+1);
+            var pero = new Pen(Color.Red, 1);
+            rect = new Rectangle(X, Y - 1, W, H + 1);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -218,25 +218,26 @@ namespace UnstackerFix
             label12.Text = rect.Width.ToString();
             label13.Text = rect.Height.ToString();
         }
+
         //Плюс в низ
         private void button4_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
-            rect = new Rectangle(X, Y, W, H+1);
+            var pero = new Pen(Color.Red, 1);
+            rect = new Rectangle(X, Y, W, H + 1);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -245,25 +246,26 @@ namespace UnstackerFix
             label12.Text = rect.Width.ToString();
             label13.Text = rect.Height.ToString();
         }
+
         //Минус с лева
         private void button6_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
-            rect = new Rectangle(X+1, Y, W-1, H);
+            var pero = new Pen(Color.Red, 1);
+            rect = new Rectangle(X + 1, Y, W - 1, H);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -272,25 +274,26 @@ namespace UnstackerFix
             label12.Text = rect.Width.ToString();
             label13.Text = rect.Height.ToString();
         }
+
         //Минус с права
         private void button7_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
-            rect = new Rectangle(X, Y, W-1, H);
+            var pero = new Pen(Color.Red, 1);
+            rect = new Rectangle(X, Y, W - 1, H);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -299,25 +302,26 @@ namespace UnstackerFix
             label12.Text = rect.Width.ToString();
             label13.Text = rect.Height.ToString();
         }
+
         //Минус с верху
         private void button8_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
-            rect = new Rectangle(X, Y+1, W, H-1);
+            var pero = new Pen(Color.Red, 1);
+            rect = new Rectangle(X, Y + 1, W, H - 1);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -326,25 +330,26 @@ namespace UnstackerFix
             label12.Text = rect.Width.ToString();
             label13.Text = rect.Height.ToString();
         }
+
         //Минус с низу
         private void button9_Click(object sender, EventArgs e)
         {
-            Graphics g = pictureBox1.CreateGraphics();
+            var g = pictureBox1.CreateGraphics();
             g.DrawImage(pictureBox1.Image, 0, 0);
 
-            int X = rect.X;
-            int Y = rect.Y;
-            int W = rect.Width;
-            int H = rect.Height;
+            var X = rect.X;
+            var Y = rect.Y;
+            var W = rect.Width;
+            var H = rect.Height;
 
-            Pen pero = new Pen(Color.Red, 1);
-            rect = new Rectangle(X, Y, W, H-1);
+            var pero = new Pen(Color.Red, 1);
+            rect = new Rectangle(X, Y, W, H - 1);
             g.DrawRectangle(pero, rect);
 
-            PictureBox pb = pictureBox1 as PictureBox;
+            var pb = pictureBox1;
 
-            Bitmap bmp1 = pb.Image as Bitmap;
-            Bitmap bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(rect, bmp1.PixelFormat);
             pictureBox2.Image = bmp2;
 
             //Выводим координаты маркера
@@ -354,9 +359,6 @@ namespace UnstackerFix
             label13.Text = rect.Height.ToString();
         }
 
-        //Проверка при вводе имени папки на дубли
-        List<string> spisokPapok = new List<string>();
-        
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -366,30 +368,22 @@ namespace UnstackerFix
                 button5.Enabled = false;
 
             //читаем файлы по порядку и копируем данные в список RezFilStata
-           
+
             //Получить имена файлов 
             var fileName = Directory.GetDirectories(patch);
 
-            int schet = 0;
-
-            foreach (char sim in fileName[0])
+            if (spisokPapok.Count == 0)
             {
-                if (sim == '\\')
+                foreach (var item in fileName)
                 {
-                    schet++;
+                    var nameFolder = item.Split('\\').Last();
+                    spisokPapok.Add(nameFolder);
                 }
             }
-            
-            //char[] charCount = (char[])fileName[0];
 
-            foreach (var item in fileName)
-            {
-                string nameFolder = item.Split('\\')[schet];
-                spisokPapok.Add(nameFolder);
-            }
-           
-            //Проверка ввода на совподение
-            string text = "MESSAGE_FROM_FIFA_TEAM_";
+
+            //Проверка ввода на совпадение
+            var text = "MESSAGE_FROM_FIFA_TEAM_";
             text += textBox1.Text;
 
             foreach (var item in spisokPapok)
@@ -400,11 +394,9 @@ namespace UnstackerFix
                     pictureBox4.Visible = false;
                     break;
                 }
-                else
-                {
-                    pictureBox4.Visible = true;
-                    pictureBox3.Visible = false;
-                }
+
+                pictureBox4.Visible = true;
+                pictureBox3.Visible = false;
             }
         }
 
@@ -419,50 +411,64 @@ namespace UnstackerFix
             pictureBox2.Image.Save(patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @".png");
 
             //Создаём json документ с координатами
-            string filePach = patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\actions.json";
-            string nameFolder = "MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text;
-            string fullPach = patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\";
+            var filePach = patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\actions.json";
+            var nameFolder = "MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text;
+            var fullPach = patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\";
 
             //Считаем координаты
-            int X = rect.X - Convert.ToInt32(textBox2.Text.Replace("-", ""));
-            int Y = rect.Y - Convert.ToInt32(textBox3.Text.Replace("-", ""));
-            int W = rect.Width + Convert.ToInt32(textBox4.Text);
-            int H = rect.Height + Convert.ToInt32(textBox5.Text);
+            var X = rect.X - Convert.ToInt32(textBox2.Text.Replace("-", ""));
+            var Y = rect.Y - Convert.ToInt32(textBox3.Text.Replace("-", ""));
+            var W = rect.Width + Convert.ToInt32(textBox4.Text);
+            var H = rect.Height + Convert.ToInt32(textBox5.Text);
 
-            //пишим в фаил
-            using (FileStream fs = new FileStream(filePach, FileMode.OpenOrCreate))
-                using (StreamWriter sw = new StreamWriter(fs))
-                {
-                    sw.WriteLine(@"{");
-                    sw.WriteLine(@" ""marker"": {");
-                    sw.WriteLine(@"    ""type"": ""image"",");
-                    sw.WriteLine(@"    ""body"": {");
-                    sw.WriteLine($@"    ""markerId"": ""{nameFolder}"",");
-                    sw.WriteLine(@"      ""accuracy"": 90,");
-                    sw.WriteLine(@"      ""searchArea"": {");
-                    sw.WriteLine($@"        ""x"": {X},");
-                    sw.WriteLine($@"        ""y"": {Y},");
-                    sw.WriteLine($@"        ""width"": {W},");
-                    sw.WriteLine($@"        ""height"": {H}");
-                    sw.WriteLine(@"      }");
-                    sw.WriteLine(@"    }");
-                    sw.WriteLine(@"  },");
-                    sw.WriteLine($@"  ""action"": [");
-                    sw.WriteLine(@"    {");
-                    sw.WriteLine($@"      ""button"": ""cross"",");
-                    sw.WriteLine($@"      ""action"": ""press"",");
-                    sw.WriteLine($@"      ""args"": ""6""");
-                    sw.WriteLine(@"    }");
-                    sw.WriteLine(@"  ]");
-                    sw.WriteLine(@"}");
-                }
-            //Открываем созданную папку
+            #region Сереализация и сохранение файла json
+            // Сереализация
+            var actionList = new List<Action>();
+            var action = new Action();
+            action.Button = "cross";
+            action.Actions = "press";
+            action.Args = "6";
+            actionList.Add(action);
+
+            var searchArea = new SearchArea();
+            searchArea.X = X;
+            searchArea.Y = Y;
+            searchArea.Width = W;
+            searchArea.Height = H;
+
+            var body = new Body();
+            body.MarkerId = nameFolder;
+            body.Accuracy = 90;
+            body.SearchArea = searchArea;
+
+            var marker = new Marker();
+            marker.Type = "image";
+            marker.Body = body;
+
+            var modelJson = new ModelJson();
+            modelJson.Marker = marker;
+            modelJson.Action = actionList;
            
-            System.Diagnostics.Process.Start(Path.GetDirectoryName(fullPach));  // Открываем папку с файлом
+
+            var result = JsonConvert.SerializeObject(modelJson,Formatting.Indented);
+
+            //Пишем в файл
+            using (var fs = new FileStream(filePach, FileMode.OpenOrCreate))
+            using (var sw = new StreamWriter(fs))
+            {
+                sw.WriteLine(result);
+            }
+
+            //Открываем созданную папку
+            Process.Start(Path.GetDirectoryName(fullPach)); // Открываем папку с файлом
 
             //Копируем название папки в буфер
-            Clipboard.SetText(nameFolder.ToString());    
+            Clipboard.SetText(nameFolder);
+            //Запускаем FileZilla
+            Process.Start(@"C:\Program Files\FileZilla FTP Client\filezilla.exe");
+            #endregion
         }
+
 
         private void button12_Click(object sender, EventArgs e)
         {
@@ -496,34 +502,34 @@ namespace UnstackerFix
             label11.Text = "0";
             label12.Text = "0";
             label13.Text = "0";
-            //Скрывае крестик и галку
+            //Скрываем крестик и галку
             pictureBox3.Visible = false;
             pictureBox4.Visible = false;
         }
-        //Выбор папки для сохранения
-        string folderPach = "";
+
         private void button13_Click(object sender, EventArgs e)
         {
-            //Открывваем выбор пути к папке
-            
+            //Открываем выбор пути к папке
+
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                folderPach = folderBrowserDialog1.SelectedPath;
-                patch = folderPach;
-            }
-            //Создаём файлик с путём к папке
-            using (FileStream fs = new FileStream(@".\FolderPach.txt", FileMode.Create))
-            using (StreamWriter sw = new StreamWriter(fs))
-            {
-                sw.WriteLine(folderPach);   
+                folderPatch = folderBrowserDialog1.SelectedPath;
+                patch = folderPatch;
             }
 
-            if(File.Exists(@".\FolderPach.txt"))
+            //Создаём файлик с путём к папке
+            using (var fs = new FileStream(@".\FolderPatch.txt", FileMode.Create))
+            using (var sw = new StreamWriter(fs))
+            {
+                sw.WriteLine(folderPatch);
+            }
+
+            if (File.Exists(@".\FolderPatch.txt"))
             {
                 label4.Text = "Папка для сохранения выбрана";
                 label4.ForeColor = Color.Gray;
                 textBox1.Enabled = true;
             }
-        }   
+        }
     }
 }

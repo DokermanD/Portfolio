@@ -18,15 +18,15 @@ namespace Parser_PS_Games_2._0
         // Список для прокси из файла
         public List<string> ProxyList = new List<string>();//Бесплатные прокси
         public List<string> ProxyListFile = new List<string>();//Перебор прокси из файла
-        //Список для провереных прокси с ошибкой
+        //Список для проверенных прокси с ошибкой
         List<string> ProxyListError = new List<string>();
-        //Список для провереных прокси
+        //Список для проверенных прокси
         public List<string> ProxyListValid = new List<string>();
-        //Список для провереных прокси
+        //Список для проверенных прокси
         public List<string> ProxyListBan = new List<string>();
-        //Список для провереных прокси с ошибкой
+        //Список для проверенных прокси с ошибкой
         public List<string> ShowProxyListError = new List<string>();
-        //Список для провереных прокси с ошибкой
+        //Список для проверенных прокси с ошибкой
         public List<string> ShowProxyListBan = new List<string>();
 
         //Свойства для отправки в форму
@@ -70,30 +70,13 @@ namespace Parser_PS_Games_2._0
                         {
                             ProxyList.Add(item + ":");
                         }
+                        else if (schet == 3)
+                        {
+                            ProxyList.Add(item);
+                        }
                         schet = 0;
                     }
                 }
-
-                //Парсим с сайта 300 проксей
-                //try
-                //{
-                //    //Грузим сайт с бесплатными прокси
-                //    doc = web.Load(@"https://free-proxy-list.net/#list");
-
-                //    //Берём все прокси в список
-                //    var freeProxy = doc.DocumentNode.SelectNodes(@"//table[@class='table table-striped table-bordered']//tbody/tr");
-
-                //    foreach (var item in freeProxy)
-                //    {
-                //        var proxy = item.SelectSingleNode(".//td[1]").InnerText;
-                //        var port = item.SelectSingleNode(".//td[2]").InnerText;
-
-                //        ProxyList.Add($"{proxy}:{port}::");
-                //    }
-                //}
-                //catch (Exception)
-                //{
-                //}
             });
         }
 

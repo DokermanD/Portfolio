@@ -29,10 +29,10 @@ namespace Parser_PS_Games_2._0
         ParsingGames parsingGames = new ParsingGames();
         ErrorLog errorLog = new ErrorLog();
 
-        //Пееременные
+        //Переменные
         bool STOP = true;
         bool banAll = true;
-        //Запус парсинга
+        //Запуск парсинга
         private async void button1_Click(object sender, EventArgs e)
         {
             // 0) Запуск отсчёта и отображения на форме общего времени работы
@@ -59,79 +59,80 @@ namespace Parser_PS_Games_2._0
                 textBox1.Text += Environment.NewLine + "Начал сбор страниц с играми..." + Environment.NewLine;
                 //Запуск метода по сбору ссылок на страницы
                 linksPages.ParsingLinkPage(chekingProxy.ProxyListValid);
-                //Ждём завершения парсинга потоками
-                await Task.Run(() =>
+            //Ждём завершения парсинга потоками
+            await Task.Run(() =>
+            {
+                while (true)
                 {
-                    while (true)
+                    if (linksPages.ListPageLinks.Count > 0)
                     {
-                        if (linksPages.ListPageLinks.Count > 0)
-                        {
-                            label10.Text = linksPages.ListPageLinks.Count.ToString();
-                            Thread.Sleep(3000);
-                        }
-                        else
-                        {
-                            if (linksPages.threadStopMonitor == linksPages.colPotok)
-                            {
-                                Thread.Sleep(5000);
-                                break;
-                            }
-
-                        }
-                        label5.Text = (linksPages.colPotok - linksPages.threadStopMonitor).ToString();
+                        label10.Text = linksPages.ListPageLinks.Count.ToString();
+                        Task.Delay(3000).Wait();
                     }
-                });
+                    else
+                    {
+                        if (linksPages.threadStopMonitor == linksPages.colPotok)
+                        {
+                            Task.Delay(5000).Wait();
+                            break;
+                        }
 
-                label10.Text = "0";
-                //Передаём свойству количество игр которые надо спарисить (для формы)
+                    }
+                    label5.Text = (linksPages.colPotok - linksPages.threadStopMonitor).ToString();
+                }
+            });
+
+            label10.Text = "0";
+                //Передаём свойству количество игр которые надо спарсить (для формы)
                 label11.Text = linksPages.HomePageLinksGames.Count.ToString();
                 textBox1.Text += Environment.NewLine + $"Собрал ссылки на парсинг игр {label11.Text}" + Environment.NewLine;
 
             // 3) Сбор данных со страницы игры.-----------------------------------------------------------------------------------
                 errorLog.ErrorLogSeve("Блок 3", "Сбор данных со страницы игры.");
-                textBox1.Text += Environment.NewLine + "Начинаю сбор даных по играм..." + Environment.NewLine;
-                parsingGames.ParssAllGames(linksPages, chekingProxy, label5.Text);
+                textBox1.Text += Environment.NewLine + "Начинаю сбор данных по играм..." + Environment.NewLine;
+                parsingGames.ParssAllGames(linksPages, chekingProxy, linksPages.colPotok);
 
-                //Ждём завершения парсинга потоками
-                await Task.Run(() =>
+            //Ждём завершения парсинга потоками
+            await Task.Run(() =>
+            {
+                while (true)
                 {
-                    while (true)
+                    if (parsingGames.LinksGames.Count > 0)
+                    {
+                        if (parsingGames.сloseThread == linksPages.colPotok)
                         {
-                            if (parsingGames.LinksGames.Count > 0)
-                            {
-                                if (parsingGames.сloseThread == linksPages.colPotok)
-                                {
-                                    textBox1.Text += "Все потоки закончили работу!" + Environment.NewLine;
-                                    break;
-                                }
-                                else
-                                {
-                                    label11.Text = parsingGames.LinksGames.Count.ToString();
-                                    Thread.Sleep(3000);
-                                }
-                            }
-                             //Закрывшиеся потоки из за бана прокси
-                            else if (parsingGames.сloseThread == linksPages.colPotok)
-                            {
-                                textBox1.Text += "Похоже что в бан ушли все прокси, парсинг остановлен!" + Environment.NewLine;
-                                banAll = false;
-                                break;
-                            }
-                            else
-                            {
-                                Thread.Sleep(10000);
-                                break;
-                            }
-
-                            label5.Text = (parsingGames.colPotok - parsingGames.сloseThread).ToString();
-
-
+                            textBox1.Text += "Все потоки закончили работу!" + Environment.NewLine;
+                            break;
                         }
-                });
+                        else
+                        {
+                            label11.Text = parsingGames.LinksGames.Count.ToString();
+                            Task.Delay(3000).Wait();
+                        }
+                    }
+                    //Закрывшиеся потоки из за бана прокси
+
+                        else if (parsingGames.сloseThread == linksPages.colPotok)
+                    {
+                        textBox1.Text += "Похоже что в бан ушли все прокси, парсинг остановлен!" + Environment.NewLine;
+                        banAll = false;
+                        break;
+                    }
+                    else
+                    {
+                        Task.Delay(10000).Wait();
+                        break;
+                    }
+
+                    label5.Text = (parsingGames.colPotok - parsingGames.сloseThread).ToString();
+
+
+                }
+            });
 
             //Если все потоки закроются из за бана прокси этот блок не выполняется
-                if (banAll)
-                {
+            if (banAll)
+            {
                     label11.Text = "0";
                     textBox1.Text += "Парсинг закончен успешно." + Environment.NewLine;
 
@@ -158,30 +159,30 @@ namespace Parser_PS_Games_2._0
                     button1.Enabled = true;
                     STOP = false;
                     errorLog.ErrorLogSeve("Блок 4", "Парсинг закончен.");
-                }
-                else
+            }
+            else
+            {
+                errorLog.ErrorLogSeve("Блок 4", "Формируем то что удалось спарсить.");
+                //Сохраняем список в блакнот
+                string fileName = $@"Pars-{DateTime.Now.ToString("dd.MM.yyyy - HH;mm")}.txt";
+                int schet = 0;
+
+                using (FileStream fs = new FileStream($@"./{fileName}", FileMode.Create))
+                using (StreamWriter sw = new StreamWriter(fs))
                 {
-                    errorLog.ErrorLogSeve("Блок 4", "Формируем то что удалось спарсить.");
-                    //Сохраняем список в блакнот
-                    string fileName = $@"Pars-{DateTime.Now.ToString("dd.MM.yyyy - HH;mm")}.txt";
-                    int schet = 0;
-
-                    using (FileStream fs = new FileStream($@"./{fileName}", FileMode.Create))
-                    using (StreamWriter sw = new StreamWriter(fs))
+                    foreach (var item in parsingGames.rezaltParsing)
                     {
-                        foreach (var item in parsingGames.rezaltParsing)
-                        {
-                            sw.WriteLine(item);
-                            schet++;
-                        }
+                        sw.WriteLine(item);
+                        schet++;
                     }
-
-                    stopWatch.Stop();//Стопаем отсчёт времени
-                    button1.Enabled = true;
-                    STOP = false;
-                    errorLog.ErrorLogSeve("Бан прокси", "Парсинг остановлен из за бана всех прокси!");
-                    textBox1.Text += "Список игр будет неполным, только то что успел собрать парсер!!" + Environment.NewLine;
                 }
+
+                stopWatch.Stop();//Стопаем отсчёт времени
+                button1.Enabled = true;
+                STOP = false;
+                errorLog.ErrorLogSeve("Бан прокси", "Парсинг остановлен из за бана всех прокси!");
+                textBox1.Text += "Список игр будет неполным, только то что успел собрать парсер!!" + Environment.NewLine;
+            }
         }
 
         //Метод считает общее время работы программы
