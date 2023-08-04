@@ -5,8 +5,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Emgu.CV;
+using Emgu.CV.Structure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using UnstackerFix.MarkerScript;
 
 namespace UnstackerFix
 {
@@ -400,7 +403,28 @@ namespace UnstackerFix
             }
         }
 
-        //Создаём папку с файлами
+
+        PictureBox _resetImage = new PictureBox();
+        /// <summary>
+        /// Проверка маркера для Script
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button15_Click(object sender, EventArgs e)
+        {
+            if (_resetImage.Image != null) pictureBox1.Image = _resetImage.Image;
+            
+            var userAnswer = openFileDialog1.ShowDialog();
+            if (userAnswer != DialogResult.OK) return;
+            var inputImage = new Image<Bgr, byte>(openFileDialog1.FileName);
+
+            pictureBox6.Image = inputImage.ToBitmap();
+            var marker = new SearchMarker(pictureBox1, pictureBox6);
+            _resetImage.Image = pictureBox1.Image;
+            pictureBox1.Image = marker.MarkerSearchMethod();
+        }
+
+        //Создаём папку с файлами для анстакера
         private void button5_Click(object sender, EventArgs e)
         {
             //Создаём саму папку
@@ -424,31 +448,40 @@ namespace UnstackerFix
             #region Сереализация и сохранение файла json
             // Сереализация
             var actionList = new List<Action>();
-            var action = new Action();
-            action.Button = "cross";
-            action.Actions = "press";
-            action.Args = "6";
+            var action = new Action
+            {
+                Button = "cross",
+                Actions = "press",
+                Args = "6"
+            };
             actionList.Add(action);
 
-            var searchArea = new SearchArea();
-            searchArea.X = X;
-            searchArea.Y = Y;
-            searchArea.Width = W;
-            searchArea.Height = H;
+            var searchArea = new SearchArea
+            {
+                X = X,
+                Y = Y,
+                Width = W,
+                Height = H
+            };
 
-            var body = new Body();
-            body.MarkerId = nameFolder;
-            body.Accuracy = 90;
-            body.SearchArea = searchArea;
+            var body = new Body
+            {
+                MarkerId = nameFolder,
+                Accuracy = 90,
+                SearchArea = searchArea
+            };
 
-            var marker = new Marker();
-            marker.Type = "image";
-            marker.Body = body;
+            var marker = new Marker
+            {
+                Type = "image",
+                Body = body
+            };
 
-            var modelJson = new ModelJson();
-            modelJson.Marker = marker;
-            modelJson.Action = actionList;
-           
+            var modelJson = new ModelJson
+            {
+                Marker = marker,
+                Action = actionList
+            };
 
             var result = JsonConvert.SerializeObject(modelJson,Formatting.Indented);
 
