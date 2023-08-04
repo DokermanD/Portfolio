@@ -10,29 +10,24 @@ namespace UnstackerFix.MarkerScript
 {
     public class SearchMarker
     {
-        private readonly Dictionary<string, Image<Bgr, byte>> _imgList;
-        private PictureBox ImgScreen { get; }
-        private PictureBox ImgMarker { get; }
+        private Image ImgScreen { get; }
+        private Image ImgMarker { get; }
         private Bitmap ResultImageBitmap { get; set; }
 
-        public SearchMarker(PictureBox imgScreen, PictureBox imgMarker)
+        public SearchMarker(Image imgScreen, Image imgMarker)
         {
             ImgScreen = imgScreen;
             ImgMarker = imgMarker;
-            _imgList = new Dictionary<string, Image<Bgr, byte>>();
-            _imgList.Add("marker", new Bitmap(ImgScreen.Image).ToImage<Bgr, byte>());
         }
         
         public Bitmap MarkerSearchMethod()
         {
             try
             {
-
-
-                if (ImgScreen.Image != null || ImgMarker != null)
+                if (ImgScreen != null || ImgMarker != null)
                 {
-                    var imgScena = _imgList["marker"].Clone();
-                    var imgMaska = new Bitmap(ImgMarker.Image).ToImage<Bgr, byte>();
+                    var imgScena = new Bitmap(ImgScreen).ToImage<Bgr, byte>();
+                    var imgMaska = new Bitmap(ImgMarker).ToImage<Bgr, byte>();
 
                     var imgout = new Mat();
 
@@ -44,6 +39,13 @@ namespace UnstackerFix.MarkerScript
                     var maxLoc = new Point();
 
                     CvInvoke.MinMaxLoc(imgout, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
+                    if (maxVal < 0.9)
+                    {
+                        ResultImageBitmap = null;
+                        return null;
+                    }
+
+
 
                     var r = new Rectangle(maxLoc, imgMaska.Size);
                     CvInvoke.Rectangle(imgScena, r, new MCvScalar(124, 252, 0), 1);

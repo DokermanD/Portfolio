@@ -419,25 +419,86 @@ namespace UnstackerFix
             var inputImage = new Image<Bgr, byte>(openFileDialog1.FileName);
 
             pictureBox6.Image = inputImage.ToBitmap();
-            var marker = new SearchMarker(pictureBox1, pictureBox6);
+            var marker = new SearchMarker(pictureBox1.Image, pictureBox6.Image);
             _resetImage.Image = pictureBox1.Image;
-            pictureBox1.Image = marker.MarkerSearchMethod();
+            pictureBox1.Image = marker.MarkerSearchMethod() ?? pictureBox1.Image;
         }
 
-        //Создаём папку с файлами для анстакера
+        //Создаем папку с файлами для Skripta
+        private void button14_Click(object sender, EventArgs e)
+        {
+            //Создаём саму папку
+            var path = Path.Combine(patch, textBox6.Text);
+            Directory.CreateDirectory(path);
+
+            //Переносим в неё картинку и маркер
+            pictureBox1.Image.Save(Path.Combine(path, textBox6.Text + @"_stack.png"));
+            pictureBox2.Image.Save(Path.Combine(path, textBox6.Text + @".png"));
+
+            //Создаем json документ с координатами
+            var filePach = Path.Combine(path, textBox6.Text + ".json");
+            var nameFolder = textBox6.Text;
+            var fullPach = path + @"\";
+
+            //Считаем координаты
+            var X = rect.X - Convert.ToInt32(textBox2.Text.Replace("-", ""));
+            var Y = rect.Y - Convert.ToInt32(textBox3.Text.Replace("-", ""));
+            var W = rect.Width + Convert.ToInt32(textBox4.Text);
+            var H = rect.Height + Convert.ToInt32(textBox5.Text);
+
+            #region Сереализация и сохранение файла json
+            // Сереализация
+            var searchAreaSkript = new SearchAreaSkript
+            {
+                X = X,
+                Y = Y,
+                Width = W,
+                Height = H
+            };
+
+
+            var modelJsonScript = new ModelJsonScript
+            {
+                MarkerId = textBox6.Text,
+                SearchAreaSkript = searchAreaSkript,
+                Accuracy = 90
+            };
+
+
+            var result = JsonConvert.SerializeObject(modelJsonScript, Formatting.Indented);
+
+            //Пишем в файл
+            using (var fs = new FileStream(filePach, FileMode.OpenOrCreate))
+            using (var sw = new StreamWriter(fs))
+            {
+                sw.WriteLine(result);
+            }
+
+            //Открываем созданную папку
+            Process.Start(Path.GetDirectoryName(fullPach)); // Открываем папку с файлом
+
+            //Копируем название папки в буфер
+            //Clipboard.SetText(nameFolder);
+            //Запускаем FileZilla
+            //Process.Start(@"C:\Program Files\FileZilla FTP Client\filezilla.exe");
+            #endregion
+        }
+
+        //Создаем папку с файлами для анстакера
         private void button5_Click(object sender, EventArgs e)
         {
             //Создаём саму папку
-            Directory.CreateDirectory(patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text);
+            var path = Path.Combine(patch, "MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text);
+            Directory.CreateDirectory(path);
 
             //Переносим в неё картинку и маркер
-            pictureBox1.Image.Save(patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"_stack.png");
-            pictureBox2.Image.Save(patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @".png");
+            pictureBox1.Image.Save(Path.Combine(path, "MESSAGE_FROM_FIFA_TEAM_", textBox1.Text + @"_stack.png"));
+            pictureBox2.Image.Save(Path.Combine(path, "MESSAGE_FROM_FIFA_TEAM_", textBox1.Text + @".png"));
 
-            //Создаём json документ с координатами
-            var filePach = patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\actions.json";
+            //Создаем json документ с координатами
+            var filePach = Path.Combine(path, "actions.json");
             var nameFolder = "MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text;
-            var fullPach = patch + @"\MESSAGE_FROM_FIFA_TEAM_" + textBox1.Text + @"\";
+            var fullPach = path + @"\";
 
             //Считаем координаты
             var X = rect.X - Convert.ToInt32(textBox2.Text.Replace("-", ""));

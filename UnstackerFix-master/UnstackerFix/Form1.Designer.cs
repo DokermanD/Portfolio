@@ -534,7 +534,7 @@
             this.button14.TabIndex = 12;
             this.button14.Text = "Создать маркер";
             this.button14.UseVisualStyleBackColor = false;
-            this.button14.Click += new System.EventHandler(this.button13_Click);
+            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // button15
             // 

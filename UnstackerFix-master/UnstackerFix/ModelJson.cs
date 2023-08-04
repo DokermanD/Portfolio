@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using UnstackerFix.MarkerScript;
 
 namespace UnstackerFix
 {
@@ -44,5 +45,10 @@ namespace UnstackerFix
         [JsonProperty("width")] public int Width { get; set; }
 
         [JsonProperty("height")] public int Height { get; set; }
+
+        public static implicit operator SearchArea(SearchAreaSkript v)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
