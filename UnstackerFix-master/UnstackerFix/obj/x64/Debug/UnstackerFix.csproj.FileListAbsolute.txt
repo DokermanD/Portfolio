@@ -18,7 +18,6 @@ E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\bin\x64\Deb
 E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\bin\x64\Debug\Emgu.CV.Platform.NetStandard.xml
 E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\bin\x64\Debug\Newtonsoft.Json.xml
 E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\obj\x64\Debug\UnstackerFix.csproj.AssemblyReference.cache
-E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\obj\x64\Debug\UnstackerFix.csproj.SuggestedBindingRedirects.cache
 E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\obj\x64\Debug\UnstackerFix.Form1.resources
 E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\obj\x64\Debug\UnstackerFix.Properties.Resources.resources
 E:\Visual Studio 2022\GIT\Portfolio\UnstackerFix-master\UnstackerFix\obj\x64\Debug\UnstackerFix.csproj.GenerateResource.cache
