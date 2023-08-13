@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using UnstackerFix.MarkerScript;
 
@@ -21,6 +23,7 @@ namespace UnstackerFix
         private string _patch;
         private string[] _patchImage;
         private Rectangle _rect;
+        private Rectangle _rect2;
 
         //Проверка при вводе имени папки на дубли
         private readonly List<string> _spisokPapok = new List<string>();
@@ -79,47 +82,80 @@ namespace UnstackerFix
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            try
-            {
-                pictureBox2.Visible = true;
+            pictureBox2.Visible = true;
 
-                var pb = pictureBox1;
+            var pb = pictureBox1;
 
-                var bmp1 = pb.Image as Bitmap;
-                var bmp2 = bmp1.Clone(_rect, bmp1.PixelFormat);
-                pictureBox2.Image = bmp2;
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(_rect, bmp1.PixelFormat);
+            pictureBox2.Image = bmp2;
 
-                //Выводим координаты маркера
-                label10.Text = _rect.X.ToString();
-                label11.Text = _rect.Y.ToString();
-                label12.Text = _rect.Width.ToString();
-                label13.Text = _rect.Height.ToString();
+            //Выводим координаты маркера
+            label10.Text = _rect.X.ToString();
+            label11.Text = _rect.Y.ToString();
+            label12.Text = _rect.Width.ToString();
+            label13.Text = _rect.Height.ToString();
 
-                //Кнопки увеличения маркера
-                button1.Enabled = true;
-                button2.Enabled = true;
-                button3.Enabled = true;
-                button4.Enabled = true;
-                //Кнопки уменьшения маркера
-                button6.Enabled = true;
-                button7.Enabled = true;
-                button8.Enabled = true;
-                button9.Enabled = true;
-                //Расширения маркера
-                textBox2.Enabled = true;
-                textBox3.Enabled = true;
-                textBox4.Enabled = true;
-                textBox5.Enabled = true;
-            }
-            catch (Exception)
-            {
-            }
+            //Кнопки увеличения маркера
+            button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = true;
+            button4.Enabled = true;
+            //Кнопки уменьшения маркера
+            button6.Enabled = true;
+            button7.Enabled = true;
+            button8.Enabled = true;
+            button9.Enabled = true;
+            //Расширения маркера
+            textBox2.Enabled = true;
+            textBox3.Enabled = true;
+            textBox4.Enabled = true;
+            textBox5.Enabled = true;
+            
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            //Получаем локацию мыши на картинке
+            // Получаем локацию мыши на картинкеи  и рисуем квадрат 15/15
             DrawRectangle(e.Location.X, e.Location.Y, 15, 15);
+            // Получаем цвет пикселя на кортинке по клику мыши 
+            GetPixelColor(e.Location.X, e.Location.Y);
+        }
+
+        /// <summary>
+        /// Получение цвета пикселя по координатам клика мыши 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void GetPixelColor(int x, int y)
+        {
+            // Получаем цвет пикселя
+            var col = ((Bitmap)pictureBox1.Image).GetPixel(x, y);
+            pictureBox8.BackColor = col;
+
+            // Вывод в форму параметров  цвета АRGB
+            label24.Text = col.A.ToString();
+            label25.Text = col.B.ToString();
+            label26.Text = col.G.ToString();
+            label27.Text = col.R.ToString();
+
+            // Берём картинку 5x5 пикселей
+            _rect2 = new Rectangle(_x - 2, _y -2, 5, 5);
+            var pb = pictureBox1;
+            var bmp1 = pb.Image as Bitmap;
+            var bmp2 = bmp1.Clone(_rect2, bmp1.PixelFormat);
+
+            var resizedBmp = new Bitmap(pictureBox9.Width, pictureBox9.Height);
+            var g = Graphics.FromImage(resizedBmp);
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.Half;
+            g.DrawImage(bmp2, 0, 0, resizedBmp.Width, resizedBmp.Height);
+            g.PixelOffsetMode = PixelOffsetMode.None;
+
+            g.DrawLine(Pens.Chartreuse,0f, resizedBmp.Height/2f, resizedBmp.Width, resizedBmp.Height/2f);
+            g.DrawLine(Pens.Chartreuse, resizedBmp.Width / 2f, 0f, resizedBmp.Width/2f, resizedBmp.Height);
+
+            pictureBox9.Image = resizedBmp;
         }
 
         /// <summary>
@@ -140,8 +176,15 @@ namespace UnstackerFix
             _h = h;
 
             var pero = new Pen(Color.Red, 1);
-            _rect = new Rectangle(_x - 7, _y - 7, _w, _h);
+            _rect = new Rectangle(_x , _y , _w, _h);
             g.DrawRectangle(pero, _rect);
+
+            var pb = pictureBox1;
+
+            var bmp1 = pb.Image as Bitmap;
+            if (_w <= 0 || _h <= 0) return;
+            var bmp2 = bmp1.Clone(_rect, bmp1.PixelFormat);
+            pictureBox2.Image = bmp2;
         }
 
         //Плюс в лево
@@ -428,31 +471,51 @@ namespace UnstackerFix
             var marker = new SearchMarker(pictureBox1.Image, pictureBox6.Image);
             _resetImage.Image = pictureBox1.Image;
             pictureBox1.Image = marker.MarkerSearchMethod() ?? pictureBox1.Image;
+
+            if (pictureBox1.Image.Flags > 0)
+            {
+                pictureBox7.Visible = true;
+                pictureBox5.Visible = false;
+            }
+            else
+            {
+                pictureBox5.Visible = true;
+                pictureBox7.Visible = false;
+            }
         }
 
-        //Создаем папку с файлами для Skripta
-        private void button14_Click(object sender, EventArgs e)
+        #region Создание файлов (Маркер, Json)
+
+        //Создание папки
+        public void CreatingFolder(string folder, string nameFile)
         {
-            //Создаём саму папку
-            var path = Path.Combine(_patch, textBox6.Text);
-            Directory.CreateDirectory(path);
+            if (Directory.Exists(Path.Combine(_patch, folder, nameFile))) return;
+            Directory.CreateDirectory(Path.Combine(_patch, folder, nameFile));
+        }
 
-            //Переносим в неё картинку и маркер
-            pictureBox1.Image.Save(Path.Combine(path, textBox6.Text + @"_stack.png"));
+        //Сохранение стака и Маркера в папку
+        public void SavingMarker(string folder, string nameFile)
+        {
+            var path = Path.Combine(_patch, folder, nameFile);
+            //pictureBox1.Image.Save(Path.Combine(path, textBox6.Text + @"_stack.png"));
             pictureBox2.Image.Save(Path.Combine(path, textBox6.Text + @".png"));
+        }
 
+        //Сохранение Json файла
+        public void SavingJsonFile(string folder, string nameFile, int x, int y, int w, int h)
+        {
+            var path = Path.Combine(_patch, folder, nameFile);
             //Создаем json документ с координатами
             var filePach = Path.Combine(path, textBox6.Text + ".json");
             var nameFolder = textBox6.Text;
             var fullPach = path + @"\";
 
             //Считаем координаты
-            var X = _rect.X - Convert.ToInt32(textBox2.Text.Replace("-", ""));
-            var Y = _rect.Y - Convert.ToInt32(textBox3.Text.Replace("-", ""));
-            var W = _rect.Width + Convert.ToInt32(textBox4.Text);
-            var H = _rect.Height + Convert.ToInt32(textBox5.Text);
+            var X = x - Convert.ToInt32(textBox2.Text.Replace("-", ""));
+            var Y = y - Convert.ToInt32(textBox3.Text.Replace("-", ""));
+            var W = w + Convert.ToInt32(textBox4.Text);
+            var H = h + Convert.ToInt32(textBox5.Text);
 
-            #region Сереализация и сохранение файла json
             // Сереализация
             var searchAreaSkript = new SearchAreaSkript
             {
@@ -462,14 +525,12 @@ namespace UnstackerFix
                 Height = H
             };
 
-
             var modelJsonScript = new ModelJsonScript
             {
                 MarkerId = textBox6.Text,
                 SearchAreaSkript = searchAreaSkript,
                 Accuracy = 90
             };
-
 
             var result = JsonConvert.SerializeObject(modelJsonScript, Formatting.Indented);
 
@@ -482,9 +543,36 @@ namespace UnstackerFix
 
             //Открываем созданную папку
             Process.Start(Path.GetDirectoryName(fullPach)); // Открываем папку с файлом
-            
-            #endregion
         }
+
+        //Создаем папку с файлами для Skripta (Маркер + JSON)
+        private void button14_Click(object sender, EventArgs e)
+        {
+            CreatingFolder("SKRIPT", textBox6.Text);
+            SavingMarker("SKRIPT", textBox6.Text);
+            SavingJsonFile("SKRIPT", textBox6.Text, _rect.X, _rect.Y, _rect.Width, _rect.Height);
+        }
+
+        //Создаем Маркер для Scripta 
+        private void button19_Click(object sender, EventArgs e)
+        {
+            CreatingFolder("SKRIPT", textBox6.Text);
+            SavingMarker("SKRIPT", textBox6.Text);
+        }
+
+        //Создаем JSON для Sсripta 
+        private void button17_Click_1(object sender, EventArgs e)
+        {
+            var x = Convert.ToInt32(textBox7.Text);
+            var y = Convert.ToInt32(textBox8.Text);
+            var w = Convert.ToInt32(textBox9.Text);
+            var h = Convert.ToInt32(textBox10.Text);
+
+            CreatingFolder("SKRIPT", textBox6.Text);
+            SavingJsonFile("SKRIPT", textBox6.Text, x, y, w, h);
+        }
+        #endregion
+
 
         #region Проверка координат
 
@@ -502,33 +590,60 @@ namespace UnstackerFix
         }
 
         /// <summary>
-        /// Создание Json по заданным координатам в ручную
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button17_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        /// <summary>
         /// Отрисовка прямоугольника по заданным координатам в ручную
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button16_Click(object sender, EventArgs e)
         {
-            if(textBox7.Text == String.Empty 
+            if(   textBox7.Text == String.Empty 
                || textBox8.Text == String.Empty
                || textBox9.Text == String.Empty
                || textBox10.Text == String.Empty) 
             { return; }
+
             var x = Convert.ToInt32(textBox7.Text);
             var y = Convert.ToInt32(textBox8.Text);
             var w = Convert.ToInt32(textBox9.Text);
             var h = Convert.ToInt32(textBox10.Text);
 
             DrawRectangle(x,y,w,h);
+        }
+
+        //Копирование текущих координат
+        private void pictureBox10_Click(object sender, EventArgs e)
+        {
+            textBox7.Text = _rect.X.ToString();
+            textBox8.Text = _rect.Y.ToString();
+            textBox9.Text = 0.ToString();
+            textBox10.Text = 0.ToString();
+        }
+
+        //Получение координат из файла Json
+        private void panel2_DragDrop(object sender, DragEventArgs e)
+        {
+            _patchImage = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var strJson = File.ReadAllText(_patchImage[0]);
+            if (!strJson.Contains("searchArea")) return;
+            var json = JObject.Parse(strJson);
+            var searchArea = json["searchArea"];
+            textBox7.Text = searchArea["x"].ToString();
+            textBox8.Text = searchArea["y"].ToString();
+            textBox9.Text = searchArea["width"].ToString();
+            textBox10.Text = searchArea["height"].ToString();
+        }
+
+        private void panel2_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        private void panel2_DragLeave(object sender, EventArgs e)
+        {
+
         }
 
         #endregion
