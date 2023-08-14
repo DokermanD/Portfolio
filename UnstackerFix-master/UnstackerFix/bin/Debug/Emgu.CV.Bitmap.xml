@@ -37,15 +37,11 @@
             <param name="tryDataSharing">Try to create Bitmap that shares the data with the image</param>
             <returns>A bitmap representation of the image.</returns>
         </member>
-        <member name="M:Emgu.CV.BitmapExtension.ToBitmap(Emgu.CV.Mat,System.Boolean)">
+        <member name="M:Emgu.CV.BitmapExtension.ToBitmap(Emgu.CV.Mat)">
             <summary>
-            Convert the mat into Bitmap
+            Convert the mat into Bitmap, the pixel values are copied over to the Bitmap
             </summary>
-            <param name="mat">The Mat to be converted into Bitmap</param>
-            <param name="tryDataSharing">
-            If true, the Bitmap created will try to use the same raw pixel data from the Mat if possible.
-            In which case, do not disposed the input Mat before you disposed the Bitmap, or you will get an memory access violation.
-            If you are not sure about it, use the default value of "false", in which case the data will be copied over to the Bitmap.</param>
+            <param name="mat">The Mat to be converted to Bitmap</param>
             <returns>A bitmap representation of the image.</returns>
         </member>
         <member name="M:Emgu.CV.BitmapExtension.ToBitmap(Emgu.CV.UMat)">
@@ -53,7 +49,6 @@
             Convert the umat into Bitmap, the pixel values are copied over to the Bitmap
             </summary>
             <param name="umat">The UMat to be converted to Bitmap</param>
-            <returns>A bitmap representation of the image.</returns>
         </member>
         <member name="M:Emgu.CV.BitmapExtension.ToBitmap(Emgu.CV.Cuda.GpuMat)">
             <summary>
@@ -61,20 +56,6 @@
             </summary>
             <param name="gpuMat">The gpu mat to be converted to Bitmap</param>
             <returns>A bitmap representation of the image.</returns>
-        </member>
-        <member name="M:Emgu.CV.BitmapExtension.ToMat(System.Drawing.Bitmap)">
-            <summary>
-            Create a Mat from Bitmap
-            </summary>
-            <param name="bitmap">The Bitmap to be converted to Mat</param>
-            <returns>The Mat converted from Bitmap</returns>
-        </member>
-        <member name="M:Emgu.CV.BitmapExtension.ToMat(System.Drawing.Bitmap,Emgu.CV.Mat)">
-            <summary>
-            Create a Mat from Bitmap
-            </summary>
-            <param name="bitmap">The Bitmap to be converted to Mat</param>
-            <param name="mat">The Mat converted from Bitmap</param>
         </member>
         <member name="M:Emgu.CV.BitmapExtension.ToImage``2(System.Drawing.Bitmap)">
             <summary>
