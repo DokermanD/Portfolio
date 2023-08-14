@@ -106,6 +106,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="MarkerScript\ModelJsonPixel.cs" />
     <Compile Include="MarkerScript\SearchMarker.cs" />
     <Compile Include="MarkerScript\ModelJsonScript.cs" />
     <Compile Include="ModelJson.cs" />

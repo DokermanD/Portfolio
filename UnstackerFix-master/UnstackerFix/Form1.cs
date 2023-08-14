@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using UnstackerFix.MarkerScript;
+using Color = System.Drawing.Color;
 
 namespace UnstackerFix
 {
@@ -53,7 +54,7 @@ namespace UnstackerFix
             if (File.Exists(@".\FolderPatch.txt"))
             {
                 label4.Text = "Папка для сохранения выбрана";
-                label4.ForeColor = Color.Gray;
+                label4.ForeColor = System.Drawing.Color.Gray;
                 textBox1.Enabled = true;
                 _patch = File.ReadAllText(@".\FolderPatch.txt").Trim();
             }
@@ -175,7 +176,7 @@ namespace UnstackerFix
             _w = w;
             _h = h;
 
-            var pero = new Pen(Color.Red, 1);
+            var pero = new Pen(System.Drawing.Color.Red, 1);
             _rect = new Rectangle(_x , _y , _w, _h);
             g.DrawRectangle(pero, _rect);
 
@@ -198,7 +199,7 @@ namespace UnstackerFix
             var W = _rect.Width;
             var H = _rect.Height;
 
-            var pero = new Pen(Color.Red, 1);
+            var pero = new Pen(System.Drawing.Color.Red, 1);
             _rect = new Rectangle(X - 1, Y, W + 1, H);
             g.DrawRectangle(pero, _rect);
 
@@ -497,7 +498,10 @@ namespace UnstackerFix
         public void SavingMarker(string folder, string nameFile)
         {
             var path = Path.Combine(_patch, folder, nameFile);
-            //pictureBox1.Image.Save(Path.Combine(path, textBox6.Text + @"_stack.png"));
+
+            if (!Directory.Exists(Path.Combine(_patch, "3.STAK", nameFile))) Directory.CreateDirectory(Path.Combine(_patch, "3.STAK"));
+            pictureBox1.Image.Save(Path.Combine(_patch, "3.STAK", nameFile + @"_stack.png"));
+
             pictureBox2.Image.Save(Path.Combine(path, textBox6.Text + @".png"));
         }
 
@@ -545,19 +549,71 @@ namespace UnstackerFix
             Process.Start(Path.GetDirectoryName(fullPach)); // Открываем папку с файлом
         }
 
+        //Сохранение Json файла для Pixel
+        public void SavingJsonPixelFile(string folder, string nameFile, int x, int y, int r, int g, int b)
+        {
+            var path = Path.Combine(_patch, folder, nameFile);
+            //Создаем json документ с координатами
+            var filePach = Path.Combine(path, textBox6.Text + ".json");
+            var nameFolder = textBox6.Text;
+            var fullPach = path + @"\";
+
+            //Считаем координаты
+            var X = x;
+            var Y = y;
+            var R = r;
+            var G = g;
+            var B = b;
+
+            // Сереализация
+            var position = new Position
+            {
+                X = X,
+                Y = Y
+            };
+
+            var color = new MarkerScript.Color
+            {
+                red = R,
+                green = G,
+                blue = B
+
+            };
+
+            var pixel = new ModelJsonPixel
+            {
+                markerId = nameFolder,
+                position = position,
+                color = color,
+                delta = 15
+            };
+
+            var result = JsonConvert.SerializeObject(pixel, Formatting.Indented);
+
+            //Пишем в файл
+            using (var fs = new FileStream(filePach, FileMode.OpenOrCreate))
+            using (var sw = new StreamWriter(fs))
+            {
+                sw.WriteLine(result);
+            }
+
+            //Открываем созданную папку
+            Process.Start(Path.GetDirectoryName(fullPach)); // Открываем папку с файлом
+        }
+
         //Создаем папку с файлами для Skripta (Маркер + JSON)
         private void button14_Click(object sender, EventArgs e)
         {
-            CreatingFolder("SKRIPT", textBox6.Text);
-            SavingMarker("SKRIPT", textBox6.Text);
-            SavingJsonFile("SKRIPT", textBox6.Text, _rect.X, _rect.Y, _rect.Width, _rect.Height);
+            CreatingFolder("1.SKRIPT", textBox6.Text);
+            SavingMarker("1.SKRIPT", textBox6.Text);
+            SavingJsonFile("1.SKRIPT", textBox6.Text, _rect.X, _rect.Y, _rect.Width, _rect.Height);
         }
 
         //Создаем Маркер для Scripta 
         private void button19_Click(object sender, EventArgs e)
         {
-            CreatingFolder("SKRIPT", textBox6.Text);
-            SavingMarker("SKRIPT", textBox6.Text);
+            CreatingFolder("1.SKRIPT", textBox6.Text);
+            SavingMarker("1.SKRIPT", textBox6.Text);
         }
 
         //Создаем JSON для Sсripta 
@@ -568,11 +624,23 @@ namespace UnstackerFix
             var w = Convert.ToInt32(textBox9.Text);
             var h = Convert.ToInt32(textBox10.Text);
 
-            CreatingFolder("SKRIPT", textBox6.Text);
-            SavingJsonFile("SKRIPT", textBox6.Text, x, y, w, h);
+            CreatingFolder("1.SKRIPT", textBox6.Text);
+            SavingJsonFile("1.SKRIPT", textBox6.Text, x, y, w, h);
         }
         #endregion
 
+        //Создаём Json для Pixel
+        private void button20_Click(object sender, EventArgs e)
+        {
+            var x = Convert.ToInt32(label10.Text);
+            var y = Convert.ToInt32(label11.Text);
+            var r = Convert.ToInt32(label27.Text);
+            var g = Convert.ToInt32(label26.Text);
+            var b = Convert.ToInt32(label25.Text);
+
+            CreatingFolder("2.PIXEL", textBox6.Text);
+            SavingJsonPixelFile("2.PIXEL", textBox6.Text, x, y, r, g, b);
+        }
 
         #region Проверка координат
 
@@ -641,10 +709,7 @@ namespace UnstackerFix
             }
         }
 
-        private void panel2_DragLeave(object sender, EventArgs e)
-        {
-
-        }
+      
 
         #endregion
 
